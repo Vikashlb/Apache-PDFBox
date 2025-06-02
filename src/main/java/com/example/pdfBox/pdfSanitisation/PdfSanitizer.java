@@ -4,6 +4,7 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 
@@ -13,8 +14,19 @@ import java.util.List;
 public class PdfSanitizer {
     public static void main(String[] args) {
         try {
-            File file = new File("AdobeAcrobat.pdf");
+            File file = new File("devon-logo-blue.pdf");
             PDDocument pdf = Loader.loadPDF(file);
+
+            PDDocumentInformation info = pdf.getDocumentInformation();
+            //Set Metadata to Null
+            info.setAuthor(null);
+            info.setTitle(null);
+            info.setSubject(null);
+            info.setKeywords(null);
+            info.setCreator(null);
+            info.setProducer(null);
+            info.setCreationDate(null);
+            info.setModificationDate(null);
 
             //Remove all annotations
 //            pdf.getPages().forEach(page -> {
