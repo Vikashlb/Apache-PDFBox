@@ -28,6 +28,15 @@ public class PdfSanitizer {
             info.setCreationDate(null);
             info.setModificationDate(null);
 
+            //Remove custom properties
+            COSDictionary dict_1 = info.getCOSObject();
+            for(COSName key : dict_1.keySet()) {
+                String keyName = key.getName();
+                if(!isStandardKey(keyName)) {
+                    dict_1.removeItem(key);
+                }
+            }
+
             //Remove all annotations
 //            pdf.getPages().forEach(page -> {
 //                try {
@@ -56,5 +65,17 @@ public class PdfSanitizer {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static boolean isStandardKey(String key) {
+        return key.equals("Title") ||
+                key.equals("Author") ||
+                key.equals("Subject") ||
+                key.equals("Keywords") ||
+                key.equals("Creator") ||
+                key.equals("Producer") ||
+                key.equals("CreationDate") ||
+                key.equals("ModDate") ||
+                key.equals("Trapped");
     }
 }
