@@ -1,4 +1,4 @@
-package com.example.pdfBox.pdfSanitisation;
+package com.apache.pdfBox;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSDictionary;
@@ -9,52 +9,48 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class PdfSanitizer {
+public class PdfBoxSanitize {
     public static void main(String[] args) {
         try {
-            File file = new File("devon-logo-blue.pdf");
+            File file = new File("Lorem Ipsum.pdf");
             PDDocument pdf = Loader.loadPDF(file);
 
             PDDocumentInformation info = pdf.getDocumentInformation();
             //Set Metadata to Null
-            info.setAuthor(null);
-            info.setTitle(null);
-            info.setSubject(null);
-            info.setKeywords(null);
-            info.setCreator(null);
-            info.setProducer(null);
-            info.setCreationDate(null);
-            info.setModificationDate(null);
+            info.setAuthor("");
+            info.setTitle("");
+            info.setSubject("");
+            info.setKeywords("");
+            info.setCreator("");
+            info.setProducer("");
+            info.setCreationDate(Calendar.getInstance());
+            info.setModificationDate(Calendar.getInstance());
 
             //Remove custom properties
+            Set<COSName> customProps = new HashSet<>();
             COSDictionary dict_1 = info.getCOSObject();
             for(COSName key : dict_1.keySet()) {
                 String keyName = key.getName();
                 if(!isStandardKey(keyName)) {
-                    dict_1.removeItem(key);
+                    customProps.add(key);
                 }
             }
 
-            //Remove all annotations
-//            pdf.getPages().forEach(page -> {
-//                try {
-//                    List<PDAnnotation> annotations = page.getAnnotations();
-//                    annotations.clear();
-//                }
-//                catch (Exception e) {
-//                    System.out.println(e.getMessage());
-//                }
-//            });
+            for(COSName key : customProps) {
+                info.getCOSObject().removeItem(key);
+            }
 
             //Remove all authors while retaining comments!
             for(PDPage page : pdf.getPages()) {
                 List<PDAnnotation> annotations = page.getAnnotations();
                 for(PDAnnotation annotation : annotations) {
                     COSDictionary dict = annotation.getCOSObject();
-                    dict.setString(COSName.T, null);
-                    dict.removeItem(COSName.MOD_DATE);
+                    dict.setString(COSName.T, "Author");
                 }
             }
 

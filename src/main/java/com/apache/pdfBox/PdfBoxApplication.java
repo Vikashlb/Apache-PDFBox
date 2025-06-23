@@ -1,13 +1,13 @@
-package com.example.pdfBox.pdfSanitisation;
+package com.apache.pdfBox;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PdfSanitisationApplication {
+public class PdfBoxApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PdfSanitisationApplication.class, args);
+		SpringApplication.run(PdfBoxApplication.class, args);
 	}
 
 }
